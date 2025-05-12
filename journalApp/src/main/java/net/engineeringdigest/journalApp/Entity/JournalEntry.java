@@ -4,6 +4,7 @@ public class JournalEntry {
 
     private  long id;
     private  String title;
+    private  String content;
 
     public String getContent() {
         return content;
@@ -29,5 +30,5 @@ public class JournalEntry {
         this.id = id;
     }
 
-    private  String content;
+
 }
