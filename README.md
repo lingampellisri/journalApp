@@ -2,7 +2,7 @@
 
 This guide provides a concise 10-step process to integrate **MongoDB** in a **Spring Boot** application.
 
----
+
 
 ## 🚀 Step-by-Step Guide
 
@@ -12,10 +12,11 @@ Include the following dependencies:
 - Spring Web
 - Spring Data MongoDB
 
----
+
 
 ### ⚙️ Step 2: Define a MongoDB Configuration
 Create a configuration class or use `application.properties` to specify:
+
 ```properties
 spring.data.mongodb.host=localhost
 spring.data.mongodb.port=27017
@@ -33,7 +34,8 @@ public class JournalEntry {
     private Date date;
     // Getters, Setters, Constructor, toString...
 }
-💾 Step 4: Create a Repository Interface
+--- 
+### 💾 Step 4: Create a Repository Interface
 
 public interface JournalRepository extends MongoRepository<JournalEntry, String> {}
 🧠 Step 5: Implement Service Layer
@@ -83,7 +85,7 @@ public class JournalController {
         return service.addEntry(entry);
     }
 }
-🧪 Step 8: Test Endpoints
+### 🧪 Step 8: Test Endpoints
 Use tools like Postman or curl to send HTTP requests to your API:
 
 GET /api/journals
