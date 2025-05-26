@@ -10,29 +10,29 @@ import java.util.HashMap;
 import java.util.List;
 
 @RestController
-@RequestMapping("/journal")
+@RequestMapping("/_journal")
 public class journelEntryController {
 
-    private  HashMap<Long, JournalEntry> JournalEntries=new HashMap<>();
 
 
     @GetMapping()
     public List<JournalEntry> getAll()
     {
-        return new ArrayList<>(JournalEntries.values());
+        return null;
+
+
     }
     @PostMapping()
     public  boolean createEntry(@RequestBody JournalEntry myEntry)
     {
-    JournalEntries.put(myEntry.getId(),myEntry);
-    return true;
+        return false;
     }
 
     @GetMapping("/id/{myId}")
 
     public JournalEntry getJournalEntryById(@PathVariable Long myId)
     {
-        return JournalEntries.get(myId);
+        return null;
     }
 
 
@@ -40,7 +40,8 @@ public class journelEntryController {
 
     public JournalEntry deleteJournalEntryById(@PathVariable Long myId)
     {
-        return JournalEntries.remove(myId);
+
+        return null;
     }
 
 
@@ -48,7 +49,7 @@ public class journelEntryController {
     @PutMapping ("/id/{myId}")
     public JournalEntry updateJournalEntryById(@PathVariable Long myId, @RequestBody JournalEntry myEntry )
     {
-        return JournalEntries.put(myId,myEntry);
+        return null;
     }
 
 
