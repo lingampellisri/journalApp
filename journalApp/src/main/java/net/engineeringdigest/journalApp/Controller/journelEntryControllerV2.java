@@ -2,8 +2,10 @@ package net.engineeringdigest.journalApp.Controller;
 
 
 import net.engineeringdigest.journalApp.Entity.JournalEntry;
+import net.engineeringdigest.journalApp.Entity.User;
 import net.engineeringdigest.journalApp.JournalAppApplication;
 import net.engineeringdigest.journalApp.Service.JournalEntryService;
+import net.engineeringdigest.journalApp.Service.UserService;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,23 +25,28 @@ public class journelEntryControllerV2 {
     @Autowired
     JournalEntryService journalEntryService;
 
-    @GetMapping()
-    public ResponseEntity<?> getAll()
+    @Autowired
+    UserService userService;
+
+    @GetMapping("{userName}")
+    public ResponseEntity<?> getAllJournalEntriesByUserName(@PathVariable String userName)
     {
-        List<JournalEntry>all= journalEntryService.getAll();
+
+        User user=userService.findByUserName(userName);
+        List<JournalEntry>all= user.getJournalEntries();
 
         if(all!=null && !all.isEmpty()) {
             return new ResponseEntity<>(all, HttpStatus.OK);
         }
         return  new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
-    @PostMapping()
-    public  ResponseEntity<JournalEntry> createEntry(@RequestBody JournalEntry myEntry)
+    @PostMapping("{userName}")
+    public  ResponseEntity<JournalEntry> createEntry(@RequestBody JournalEntry myEntry,@PathVariable String userName)
     {
         try {
             myEntry.setDate(LocalDate.now());
-            journalEntryService.saveEntry(myEntry);
-            return  new ResponseEntity<>(myEntry, HttpStatus.OK);
+            journalEntryService.saveEntry(myEntry,userName);
+            return  new ResponseEntity<>(myEntry, HttpStatus.CREATED);
         }
         catch(Exception e)
         {
@@ -60,18 +67,18 @@ public class journelEntryControllerV2 {
     }
 
 
-    @DeleteMapping("/id/{myId}")
+    @DeleteMapping("/id/{userName}/{myId}")
 
-    public ResponseEntity<JournalEntry> deleteJournalEntryById(@PathVariable ObjectId myId)
+    public ResponseEntity<JournalEntry> deleteJournalEntryById( @PathVariable String userName,@PathVariable ObjectId myId)
     {
-       journalEntryService.deleteById(myId);
+       journalEntryService.deleteById(myId,userName);
        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 
 
-    @PutMapping ("/id/{myId}")
-    public ResponseEntity<?> updateJournalEntryById(@PathVariable ObjectId myId, @RequestBody JournalEntry myEntry )
+    @PutMapping ("/id/{userName}/{myId}")
+    public ResponseEntity<?> updateJournalEntryById(@PathVariable ObjectId myId, @RequestBody JournalEntry myEntry,@PathVariable String userName )
     {
 
         JournalEntry old= journalEntryService.findById(myId).orElse(null);
