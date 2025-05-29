@@ -3,7 +3,6 @@ package net.engineeringdigest.journalApp.Service;
 import net.engineeringdigest.journalApp.Entity.JournalEntry;
 import net.engineeringdigest.journalApp.Entity.User;
 import net.engineeringdigest.journalApp.repository.JournalEntryRepository;
-import net.engineeringdigest.journalApp.repository.UserRepository;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -30,7 +29,7 @@ public class JournalEntryService {
            journalEntry.setDate(LocalDate.now());
            JournalEntry saved= journalEntryRepository.save(journalEntry);
            user.getJournalEntries().add(saved);
-           userService.saveEntry(user);
+           userService.saveUser(user);
        }
        catch (Exception e)
        {
@@ -54,15 +53,31 @@ public class JournalEntryService {
         return journalEntryRepository.findById(Id);
     }
 
-    public  void deleteById(ObjectId Id,String userName)
+    @Transactional
+    public  boolean deleteById(ObjectId Id,String userName)
     {
+        boolean removed=false;
+        try{
 
-        User user=userService.findByUserName(userName);
-        user.getJournalEntries().removeIf(x->x.getId().equals(Id));
-        userService.saveEntry(user);
-        journalEntryRepository.deleteById(Id);
+            User user=userService.findByUserName(userName);
+             removed=user.getJournalEntries().removeIf(x->x.getId().equals(Id));
+            if(removed) {
+                userService.saveUser(user);
+                journalEntryRepository.deleteById(Id);
+                return removed;
+            }
+
+        }
+        catch (Exception e)
+        {
+            System.out.println(e);
+            throw new RuntimeException("Error While Deleting By Id");
+        }
+        return removed;
 
     }
+
+
 
 
 }
