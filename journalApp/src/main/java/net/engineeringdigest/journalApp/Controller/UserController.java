@@ -4,6 +4,8 @@ package net.engineeringdigest.journalApp.Controller;
 import net.engineeringdigest.journalApp.Entity.JournalEntry;
 import net.engineeringdigest.journalApp.Entity.User;
 import net.engineeringdigest.journalApp.Service.UserService;
+import net.engineeringdigest.journalApp.Service.weatherService;
+import net.engineeringdigest.journalApp.api.response.weatherResponse;
 import net.engineeringdigest.journalApp.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,7 +27,8 @@ public class UserController {
 
     @Autowired
     private UserRepository userRepository;
-
+    @Autowired
+    private weatherService weatherServicee;
 
     @GetMapping
         public List<User> getAllJournalEntriesOfUser()
@@ -59,6 +62,23 @@ public class UserController {
 
         userRepository.deleteByUserName(authentication.getName());
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+
+
+    @GetMapping("/Greet")
+    public ResponseEntity<?> greets( )
+    {
+        Authentication authentication=SecurityContextHolder.getContext().getAuthentication();
+        weatherResponse weatherResponsee=weatherServicee.getWeather("Mumbai");
+        String greetings=" ";
+
+        if(weatherResponsee!=null)
+        {
+            greetings=", Weather feels like "+weatherResponsee.getCurrent().getFeelslike();
+        }
+
+        return new ResponseEntity<>("Hi "+authentication.getName() +greetings,  HttpStatus.OK);
     }
 
 
